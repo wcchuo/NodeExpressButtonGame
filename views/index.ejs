@@ -1,0 +1,48 @@
+<html>
+<head>
+    <title>Your Comments</title>
+    <link href='style.css' type="text/css" rel="stylesheet" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type ="text/javascript">
+          $(document).ready(function (){
+              // this triggers the connection event in our server!
+              var socket = io.connect();
+
+            $('button').click(function (){
+                  socket.emit("click_counts", {
+                    click: 1
+                  });
+              });
+              socket.on('total_count', function (data){
+                  console.log('The server says: ' + data.total);
+                  $( "span#time" ).html(data.total);
+                  $( "span#message" ).html('');
+              });
+              
+            $('button#nuke').click(function (){
+                  socket.emit("nuke_counts", {
+                    nuke: 'yes'
+                  });
+              });
+              socket.on('total_count', function (data){
+                  console.log('The server says: ' + data.total);
+                  $( "span#time" ).html(data.total);
+                  $( "span#message" ).html(data.message);
+
+              });
+
+          })
+    </script>
+</head>
+<body>
+ <div class="container">
+ <h3>The Epic Button Game</h3>
+   <div id='message'></div>
+   <h1>The button has been pushed <span id='time'></span> time(s).</h1>
+  <button class='button center btn-lg'>Epic Button</button>
+  <div class="text-center">Push the button to update the count!</br><span id='message'></span></div>
+  <div class="text-center"><button id='nuke' class='button btn-red pull-right'>Reset Count</button></div>
+ </div>
+</body>
+</html>
